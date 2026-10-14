@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>آزمایشگاه کروماتوگرافی و فیتوشیمی اسپرسو | PhytoMedChem Nexus</title>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Vazirmatn Persian Font -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-cream: #F8F5EE;
+            --bg-card: #FFFFFF;
+            --bg-panel: #F1ECE1;
+            --gold-primary: #8C6D3F;
+            --gold-light: #C5A875;
+            --gold-dark: #5C4523;
+            --sage-green: #3B5240;
+            --sage-light: #E6EFE8;
+            --text-dark: #2A241D;
+            --text-muted: #6E6355;
+            --sour-color: #D99B26;
+            --sweet-color: #2E7D5B;
+            --bitter-color: #7A3E26;
+            --danger-color: #B93829;
+            --border-radius: 16px;
+            --shadow: 0 8px 24px rgba(92, 69, 35, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-cream);
+            background-image: radial-gradient(circle at 20% 10%, rgba(197, 168, 117, 0.14) 0%, transparent 50%),
+                              radial-gradient(circle at 80% 90%, rgba(59, 82, 64, 0.1) 0%, transparent 50%);
+            color: var(--text-dark);
+            line-height: 1.65;
+            padding-bottom: 40px;
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* Header with Embedded Brand Logo */
+        .brand-header {
+            background: linear-gradient(135deg, #FFFDF9 0%, #EFE8D8 100%);
+            border: 2px solid var(--gold-light);
+            border-radius: 22px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -10%;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(140,109,63,0.09) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .brand-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            z-index: 1;
+        }
+
+        .logo-frame {
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+            border: 2.5px solid var(--gold-primary);
+            padding: 3px;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(92, 69, 35, 0.18);
+            flex-shrink: 0;
+        }
+
+        .logo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .brand-titles h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--gold-dark);
+            margin-bottom: 4px;
+        }
+
+        .brand-titles .subtitle {
+            font-size: 0.85rem;
+            color: var(--sage-green);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .badge-pill {
+            background: var(--sage-green);
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 99px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .tg-cta {
+            background: linear-gradient(135deg, var(--sage-green) 0%, #26382A 100%);
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(59, 82, 64, 0.25);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            white-space: nowrap;
+            z-index: 1;
+        }
+
+        .tg-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 82, 64, 0.35);
+        }
+
+        /* Preset Scenario Buttons */
+        .presets-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            margin-bottom: 18px;
+            scrollbar-width: none;
+        }
+        .presets-bar::-webkit-scrollbar { display: none; }
+
+        .preset-btn {
+            background: var(--bg-card);
+            border: 1.5px solid #DFD5C3;
+            color: var(--text-dark);
+            padding: 9px 15px;
+            border-radius: 12px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .preset-btn:hover, .preset-btn.active {
+            background: var(--gold-primary);
+            color: #fff;
+            border-color: var(--gold-primary);
+            box-shadow: 0 4px 10px rgba(140, 109, 63, 0.25);
+        }
+
+        /* Main Grid */
+        .lab-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.25fr;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        @media (max-width: 780px) {
+            .lab-grid {
+                grid-template-columns: 1fr;
+            }
+            .brand-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .brand-info {
+                flex-direction: column;
+            }
+            .brand-titles .subtitle {
+                justify-content: center;
+            }
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid #E5DEC9;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--gold-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #EFEAE0;
+            padding-bottom: 10px;
+        }
+
+        .card-title span.chem-tag {
+            font-size: 0.72rem;
+            background: var(--bg-panel);
+            color: var(--gold-primary);
+            padding: 3px 9px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        /* Sliders */
+        .control-group {
+            margin-bottom: 18px;
+        }
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .control-label {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .control-val {
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--gold-primary);
+            background: var(--bg-panel);
+            padding: 2px 10px;
+            border-radius: 8px;
+            direction: ltr;
+        }
+
+        .control-hint {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #E5DEC9;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--gold-primary);
+            border: 3px solid #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.12);
+            background: var(--gold-dark);
+        }
+
+        /* KPI Metrics Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .kpi-box {
+            background: var(--bg-panel);
+            border-radius: 12px;
+            padding: 12px 14px;
+            border-right: 4px solid var(--gold-primary);
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .kpi-value {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            direction: ltr;
+            text-align: right;
+        }
+
+        .kpi-sub {
+            font-size: 0.7rem;
+            color: var(--sage-green);
+            font-weight: 600;
+        }
+
+        /* Flavor Balance Meter */
+        .balance-container {
+            background: #FCFBF8;
+            border: 1px solid #EAE2D3;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 16px;
+        }
+
+        .balance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .spectrum-bar {
+            height: 16px;
+            border-radius: 99px;
+            background: linear-gradient(90deg, 
+                #EAB308 0%, 
+                #84CC16 25%, 
+                #10B981 50%, 
+                #D97706 75%, 
+                #78350F 100%);
+            position: relative;
+            margin: 12px 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+        }
+
+        .spectrum-needle {
+            position: absolute;
+            top: -5px;
+            width: 14px;
+            height: 26px;
+            background: #fff;
+            border: 3px solid var(--text-dark);
+            border-radius: 6px;
+            transform: translateX(50%);
+            transition: right 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .taste-pills {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .taste-pill {
+            padding: 6px;
+            border-radius: 8px;
+            font-size: 0.76rem;
+            font-weight: 700;
+        }
+        .pill-sour { background: rgba(234, 179, 8, 0.15); color: #9A6B00; }
+        .pill-sweet { background: rgba(16, 185, 129, 0.15); color: #0F6E4B; }
+        .pill-bitter { background: rgba(120, 53, 15, 0.15); color: #6B2E0E; }
+
+        /* Phytochemical Fraction Bars */
+        .phyto-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .phyto-item {
+            background: #FCFBF8;
+            border: 1px solid #EFEAE0;
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+
+        .phyto-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .phyto-formula {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            direction: ltr;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background: #EAE3D5;
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 99px;
+            transition: width 0.3s ease;
+        }
+
+        /* Chart Section */
+        .chart-wrapper {
+            position: relative;
+            height: 310px;
+            width: 100%;
+        }
+
+        /* Receptor & Medicinal Chemistry Diagnostic Box */
+        .medchem-note {
+            background: linear-gradient(135deg, var(--sage-light) 0%, #F4F7F4 100%);
+            border-right: 5px solid var(--sage-green);
+            border-radius: 14px;
+            padding: 16px 18px;
+            margin-top: 18px;
+            font-size: 0.86rem;
+        }
+
+        .medchem-note h4 {
+            color: var(--sage-green);
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .footer-brand {
+            text-align: center;
+            margin-top: 26px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .footer-brand a {
+            color: var(--gold-dark);
+            font-weight: 700;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header with Channel Logo -->
+    <header class="brand-header">
+        <div class="brand-info">
+            <div class="logo-frame">
+                <img src="data:image/jpeg;base64,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" alt="PhytoMedChem Nexus Logo">
+            </div>
+            <div class="brand-titles">
+                <h1>آزمایشگاه کروماتوگرافی و فیتوشیمی اسپرسو</h1>
+                <div class="subtitle">
+                    <span class="badge-pill">شیمی دارویی • فیتوشیمی</span>
+                    <span>شبیه‌ساز سینتیک استخراج جامد-مایع تحت فشار (PSLE)</span>
+                </div>
+            </div>
+        </div>
+        <a href="https://t.me/PhytoMedChemNexus" target="_blank" class="tg-cta">
+            <span>عضویت در PhytoMedChem Nexus</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </a>
+    </header>
+
+    <!-- Quick Presets -->
+    <div class="presets-bar">
+        <button class="preset-btn active" onclick="applyPreset(250, 93, 9, this)">✨ اسپرسو استاندارد (Sweet Spot)</button>
+        <button class="preset-btn" onclick="applyPreset(210, 94, 9, this)">🍯 ریسترتو غلیظ (Ristretto)</button>
+        <button class="preset-btn" onclick="applyPreset(310, 91, 6, this)">⚡ توربوشات مدرن (6 Bar Turbo)</button>
+        <button class="preset-btn" onclick="applyPreset(350, 88, 8, this)">🍋 کم‌عصاره اسیدی (Under-extracted)</button>
+        <button class="preset-btn" onclick="applyPreset(165, 96, 11, this)">⚠️ خطای کانال‌زایی (Channeling)</button>
+    </div>
+
+    <!-- Main Interactive Grid -->
+    <div class="lab-grid">
+        <!-- Left Column: Input Sliders & Phytochemical Fractions -->
+        <div class="card">
+            <div class="card-title">
+                <span>⚙️ پارامترهای راکتور استخراج</span>
+                <span class="chem-tag">Dose: 18g | Out: 36g</span>
+            </div>
+
+            <!-- Grind Size Slider -->
+            <div class="control-group">
+                <div class="control-header">
+                    <span class="control-label">اندازه ذرات آسیاب (Grind Size - d<sub>p</sub>)</span>
+                    <span class="control-val" id="grindVal">250 μm</span>
+                </div>
+                <input type="range" id="grindSlider" min="150" max="400" step="5" value="250" oninput="updateLab()">
+                <div class="control-hint">
+                    <span>۱۵۰ μm (بسیار ریز / نفوذپذیری کم)</span>
+                    <span>۴۰۰ μm (درشت / عبوری سریع)</span>
+                </div>
+            </div>
+
+            <!-- Water Temp Slider -->
+            <div class="control-group">
+                <div class="control-header">
+                    <span class="control-label">دمای حلال / آب (Temperature - T)</span>
+                    <span class="control-val" id="tempVal">93 °C</span>
+                </div>
+                <input type="range" id="tempSlider" min="86" max="98" step="1" value="93" oninput="updateLab()">
+                <div class="control-hint">
+                    <span>۸۶ °C (انحلال قطبی ملایم)</span>
+                    <span>۹۸ °C (سینتیک آرنیوس بالا)</span>
+                </div>
+            </div>
+
+            <!-- Pump Pressure Slider -->
+            <div class="control-group">
+                <div class="control-header">
+                    <span class="control-label">فشار هیدرولیک پمپ (Pressure - ΔP)</span>
+                    <span class="control-val" id="pressVal">9.0 Bar</span>
+                </div>
+                <input type="range" id="pressSlider" min="4" max="12" step="0.5" value="9" oninput="updateLab()">
+                <div class="control-hint">
+                    <span>۴ بار (تراکم بستر کم)</span>
+                    <span>۱۲ بار (فشردگی کیک قهوه)</span>
+                </div>
+            </div>
+
+            <div class="card-title" style="margin-top: 24px;">
+                <span>🧪 درصد بازیافت فیتوکمیکال‌ها در فنجان</span>
+                <span class="chem-tag">Phytochemical Yield</span>
+            </div>
+
+            <div class="phyto-list">
+                <div class="phyto-item">
+                    <div class="phyto-top">
+                        <span>کافئین (1,3,7-Trimethylxanthine)</span>
+                        <span class="phyto-formula" id="caffPct">88% (~145 mg)</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="caffBar" style="width: 88%; background: #2E7D5B;"></div>
+                    </div>
+                </div>
+
+                <div class="phyto-item">
+                    <div class="phyto-top">
+                        <span>اسیدهای کلروژنیک و آلی (CGA / Citric / Malic)</span>
+                        <span class="phyto-formula" id="acidPct">82% (LogP &lt; 0)</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="acidBar" style="width: 82%; background: #D99B26;"></div>
+                    </div>
+                </div>
+
+                <div class="phyto-item">
+                    <div class="phyto-top">
+                        <span>لیپیدهای دی‌ترپنی امولسیون‌شده (Cafestol &amp; Kahweol)</span>
+                        <span class="phyto-formula" id="lipidPct">68% (Crema Colloid)</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="lipidBar" style="width: 68%; background: #C5A875;"></div>
+                    </div>
+                </div>
+
+                <div class="phyto-item">
+                    <div class="phyto-top">
+                        <span>فنیل‌ایندان‌ها و تانن‌های پلیمری (عوامل گسی و تلخی)</span>
+                        <span class="phyto-formula" id="tanninPct">34% (Saliva Binding)</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="tanninBar" style="width: 34%; background: #7A3E26;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: KPIs, Flavor Balance & Elution Chromatogram -->
+        <div class="card">
+            <div class="card-title">
+                <span>📊 خروجی هیدرودینامیک و پروفایل حسی</span>
+                <span class="chem-tag" id="statusBadge">نقطه طلایی (Balanced)</span>
+            </div>
+
+            <!-- 4 KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-box">
+                    <div class="kpi-label">بازدهی عصاره‌گیری (Extraction Yield)</div>
+                    <div class="kpi-value" id="eyVal">20.1 %</div>
+                    <div class="kpi-sub">استاندارد طلایی SCA: ۱۸٪ تا ۲۲٪</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-label">سرعت جریان دارسی (Flow Rate)</div>
+                    <div class="kpi-value" id="flowVal">1.30 ml/s</div>
+                    <div class="kpi-sub" id="shotTimeVal">زمان کل شات: ۲۸ ثانیه</div>
+                </div>
+            </div>
+
+            <!-- Sour-to-Bitter Spectrum -->
+            <div class="balance-container">
+                <div class="balance-header">
+                    <span style="color: #9A6B00;">🍋 قطبی / اسیدی (ترش)</span>
+                    <span style="color: #0F6E4B;">🍫 تعادل مایلارد و شیرینی</span>
+                    <span style="color: #6B2E0E;">🪵 فنیل‌ایندان و تانن (تلخ/گس)</span>
+                </div>
+                <div class="spectrum-bar">
+                    <div class="spectrum-needle" id="balanceNeedle" style="right: 50%;"></div>
+                </div>
+                <div class="taste-pills">
+                    <div class="taste-pill pill-sour" id="sourShare">اسیدیته: ۳۰٪</div>
+                    <div class="taste-pill pill-sweet" id="sweetShare">شیرینی و بدنه: ۵۰٪</div>
+                    <div class="taste-pill pill-bitter" id="bitterShare">تلخی و گسی: ۲۰٪</div>
+                </div>
+            </div>
+
+            <!-- Elution Chromatogram Chart -->
+            <div style="font-size: 0.84rem; font-weight: 700; color: var(--gold-dark); margin-bottom: 8px;">
+                📈 کروماتوگرام شستشوی زمانی (Elution Profile) و منحنی بازدهی (EY%):
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="elutionChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic Medicinal Chemistry & Pharmacology Explanation -->
+    <div class="medchem-note" id="medchemAnalysis">
+        <h4>🔬 تفسیر فیتوشیمیایی و فارماکولوژیک شات فعلی:</h4>
+        <p id="medchemText">
+            در این تنظیمات (نقطه طلایی)، زمان تماس ۲۸ ثانیه‌ای اجازه می‌دهد اسیدهای آلی قطبی و کافئین در ۱۰ ثانیه اول شسته شده و سپس قندهای حاصل از واکنش مایلارد و میکروامولسیون دی‌ترپن‌ها (کافستول) استخراج شوند. حضور لیپیدهای امولسیون‌شده، گیرنده‌های تلخی (TAS2Rs) روی زبان را به صورت برگشت‌پذیر پوشش داده و بدون استخراج بیش‌ازحد تانن‌های رسوب‌دهنده پروتئین بزاق، طعمی شیرین و متعادل ایجاد می‌کند.
+        </p>
+    </div>
+
+    <div class="footer-brand">
+        طراحی و توسعه اختصاصی برای کانال تلگرام <a href="https://t.me/PhytoMedChemNexus" target="_blank">@PhytoMedChemNexus</a> | شیمی دارویی و فیتوشیمی (مباحث نوین دارو)
+    </div>
+</div>
+
+<script>
+    // Initialize Telegram Mini App if opened inside Telegram
+    if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+    }
+
+    let elutionChartInstance = null;
+
+    function initChart() {
+        const ctx = document.getElementById('elutionChart').getContext('2d');
+        elutionChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'بازدهی عصاره‌گیری تجمعی (EY %)',
+                        data: [],
+                        borderColor: '#3B5240',
+                        backgroundColor: 'rgba(59, 82, 64, 0.12)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 2
+                    },
+                    {
+                        label: 'فاز اسیدهای قطبی و کافئین (ترشی اولیه)',
+                        data: [],
+                        borderColor: '#D99B26',
+                        borderDash: [5, 4],
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'فاز قندهای مایلارد و لیپیدها (شیرینی و کرما)',
+                        data: [],
+                        borderColor: '#10B981',
+                        borderDash: [3, 3],
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'فاز فنیل‌ایندان‌ها و تانن‌ها (تلخی و گسی)',
+                        data: [],
+                        borderColor: '#7A3E26',
+                        borderDash: [2, 2],
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: 'Vazirmatn', size: 11 },
+                            boxWidth: 14,
+                            padding: 10
+                        }
+                    },
+                    tooltip: {
+                        titleFont: { family: 'Vazirmatn', size: 12 },
+                        bodyFont: { family: 'Vazirmatn', size: 11 },
+                        callbacks: {
+                            title: function(items) {
+                                return 'ثانیه ' + items[0].label + ' عصاره‌گیری';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'زمان عصاره‌گیری (ثانیه)',
+                            font: { family: 'Vazirmatn', size: 11, weight: 'bold' }
+                        },
+                        ticks: { font: { family: 'Vazirmatn', size: 10 } }
+                    },
+                    y: {
+                        min: 0,
+                        max: 28,
+                        title: {
+                            display: true,
+                            text: 'بازدهی عصاره‌گیری (٪) / شدت شستشو',
+                            font: { family: 'Vazirmatn', size: 11, weight: 'bold' }
+                        },
+                        ticks: { font: { family: 'Vazirmatn', size: 10 } }
+                    }
+                }
+            }
+        });
+    }
+
+    function applyPreset(grind, temp, press, btnEl) {
+        document.getElementById('grindSlider').value = grind;
+        document.getElementById('tempSlider').value = temp;
+        document.getElementById('pressSlider').value = press;
+        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+        if (btnEl) btnEl.classList.add('active');
+        updateLab();
+    }
+
+    function updateLab() {
+        const grind = parseFloat(document.getElementById('grindSlider').value);
+        const temp = parseFloat(document.getElementById('tempSlider').value);
+        const press = parseFloat(document.getElementById('pressSlider').value);
+
+        document.getElementById('grindVal').textContent = grind + ' μm';
+        document.getElementById('tempVal').textContent = temp + ' °C';
+        document.getElementById('pressVal').textContent = press.toFixed(1) + ' Bar';
+
+        // Check for Channeling risk (ultra-fine grind + high pressure)
+        const isChanneling = (grind < 185 && press >= 8.5) || (grind < 170);
+
+        // Darcy flow rate calculation (ml/s)
+        let rawFlow = 0.38 + 2.75 * Math.pow((grind - 135) / 265, 1.58) * Math.pow(press / 9, 0.42) * (1 - 0.028 * Math.pow(press - 9, 2)) * (1 + 0.005 * (temp - 93));
+        if (isChanneling) {
+            rawFlow *= 1.35; // localized rupture increases bypass flow
+        }
+        const flow = Math.max(0.45, Math.min(3.8, rawFlow));
+        const shotTime = Math.round(36 / flow);
+
+        // Extraction Yield (EY %)
+        let ey = 20.0 * Math.pow(250 / grind, 0.41) * (1 + 0.018 * (temp - 93)) * (1 + 0.024 * (press - 9) - 0.006 * Math.pow(press - 9, 2));
+        if (isChanneling) {
+            ey -= 1.6; // uneven extraction lowers average yield while spiking localized bitterness
+        }
+        ey = Math.max(11.5, Math.min(26.5, ey));
+
+        // Update KPI DOM
+        document.getElementById('eyVal').textContent = ey.toFixed(1) + ' %';
+        document.getElementById('flowVal').textContent = flow.toFixed(2) + ' ml/s';
+        document.getElementById('shotTimeVal').textContent = 'زمان کل شات (۳۶ گرم): ' + shotTime + ' ثانیه';
+
+        // Calculate Phytochemical Recovery Fractions
+        const caffRecovery = Math.min(98, Math.max(55, Math.round(88 * (1 - Math.exp(-shotTime / 11)) * (1 + 0.01 * (temp - 90)))));
+        const caffMg = Math.round(caffRecovery * 1.65);
+        const acidRecovery = Math.min(96, Math.max(50, Math.round(82 * (1 - Math.exp(-shotTime / 12)))));
+        const lipidRecovery = Math.min(92, Math.max(25, Math.round(68 * (press / 9) * (1 - 0.04 * Math.pow(press - 9, 2)) * (ey / 20))));
+        let tanninRecovery = Math.min(95, Math.max(8, Math.round(34 * Math.pow(ey / 20, 2.6) * (1 + 0.035 * (temp - 93)))));
+        if (isChanneling) tanninRecovery = Math.min(95, tanninRecovery + 28);
+
+        document.getElementById('caffPct').textContent = caffRecovery + '% (~' + caffMg + ' mg)';
+        document.getElementById('caffBar').style.width = caffRecovery + '%';
+
+        document.getElementById('acidPct').textContent = acidRecovery + '% (LogP < 0)';
+        document.getElementById('acidBar').style.width = acidRecovery + '%';
+
+        document.getElementById('lipidPct').textContent = lipidRecovery + '% (Crema Colloid)';
+        document.getElementById('lipidBar').style.width = lipidRecovery + '%';
+
+        document.getElementById('tanninPct').textContent = tanninRecovery + '% (Saliva Binding)';
+        document.getElementById('tanninBar').style.width = tanninRecovery + '%';
+
+        // Flavor Balance & Needle Position (0% = Far Sour, 50% = Balanced, 100% = Far Bitter)
+        let needlePct = 50 + (ey - 20.0) * 8.5 + (temp - 93) * 1.4;
+        if (isChanneling) needlePct += 18;
+        needlePct = Math.max(6, Math.min(94, needlePct));
+        document.getElementById('balanceNeedle').style.right = needlePct + '%';
+
+        // Taste shares
+        let sour = Math.round(Math.max(10, 75 - needlePct * 0.9));
+        let bitter = Math.round(Math.max(10, (needlePct - 25) * 0.95));
+        let sweet = Math.max(10, 100 - sour - bitter);
+        // Normalize to 100%
+        const totalTaste = sour + sweet + bitter;
+        sour = Math.round((sour / totalTaste) * 100);
+        bitter = Math.round((bitter / totalTaste) * 100);
+        sweet = 100 - sour - bitter;
+
+        document.getElementById('sourShare').textContent = 'اسیدیته: ' + sour + '٪';
+        document.getElementById('sweetShare').textContent = 'شیرینی و بدنه: ' + sweet + '٪';
+        document.getElementById('bitterShare').textContent = 'تلخی و گسی: ' + bitter + '٪';
+
+        // Diagnostic Status & Medicinal Chemistry Note
+        const badge = document.getElementById('statusBadge');
+        const medText = document.getElementById('medchemText');
+
+        if (isChanneling) {
+            badge.textContent = '⚠️ هشدار کانال‌زایی (Channeling)';
+            badge.style.background = '#FEE2E2';
+            badge.style.color = '#991B1B';
+            medText.innerHTML = '<strong>تشخیص کروماتوگرافی (خطای کانال‌زایی):</strong> به دلیل آسیاب بسیار ریز و فشار بالا، بستر قهوه دچار شکست هیدرولیکی شده است! آب داغ به جای نفوذ یکنواخت، از شکاف‌های کم‌مقاومت عبور کرده و در مسیر کانال، <strong>فنیل‌ایندان‌ها و تانن‌های پلیمری</strong> را به شدت می‌شوید (رسوب پروتئین‌های پرولینی بزاق و حس گسی شدید)، در حالی که سایر نقاط کیک قهوه کم‌عصاره و ترش باقی مانده‌اند.';
+        } else if (ey < 18.0) {
+            badge.textContent = '🍋 کم‌عصاره (Under-extracted)';
+            badge.style.background = '#FEF3C7';
+            badge.style.color = '#92400E';
+            medText.innerHTML = '<strong>تشخیص فیتوشیمیایی (فاز قطبی غالب):</strong> سرعت جریان بالا و زمان تماس کوتاه (' + shotTime + ' ثانیه) باعث شده فقط مولکول‌های کوچک و به شدت قطبی با <code>LogP &lt; 0</code> (اسید سیتریک، مالیک، کینیک و بخش عمده کافئین) شسته شوند. عصاره‌گیری پیش از ورود قندهای مایلارد و تشکیل کامل امولسیون لیپیدی قطع شده و گیرنده‌های ترشی زبان بدون حضور لیپیدهای پوشاننده، اسیدیته تیزی را حس می‌کنند.';
+        } else if (ey <= 22.0) {
+            badge.textContent = '✨ نقطه طلایی (Sweet Spot)';
+            badge.style.background = '#D1FAE5';
+            badge.style.color = '#065F46';
+            medText.innerHTML = '<strong>تشخیص فیتوشیمیایی (تعادل بهینه فارماکولوژیک):</strong> بازدهی ' + ey.toFixed(1) + '٪ در زمان ' + shotTime + ' ثانیه، استخراج کاملی از اسیدهای میوه‌ای، آلکالوئید کافئین و <strong>محصولات واکنش مایلارد و لاکتون‌ها</strong> ایجاد کرده است. میکروامولسیون دی‌ترپن‌ها (کافستول و کاوهئول) در کرما، گیرنده‌های تلخی <strong>TAS2Rs</strong> را تعدیل کرده و پیش از شستشوی تانن‌های سنگین، فرآیند متوقف شده است.';
+        } else {
+            badge.textContent = '🔥 بیش‌عصاره (Over-extracted)';
+            badge.style.background = '#FFEDD5';
+            badge.style.color = '#7C2D12';
+            medText.innerHTML = '<strong>تشخیص فیتوشیمیایی (شستشوی فاز آروماتیک سنگین):</strong> عبور از مرز ۲۲٪ بازدهی باعث هیدرولیز و استخراج ترکیبات دیرمحلول با وزن مولکولی بالا (<strong>فنیل‌ایندان‌ها، ملانوئیدین‌ها و پلی‌فنول‌های تاننی</strong>) شده است. این ترکیبات علاوه بر تحریک شدید گیرنده‌های تلخی TAS2R، با پروتئین‌های بزاق دهان کمپلکس نامحلول تشکیل داده و حس خشکی و گسی (Astringency) ایجاد می‌کنند.';
+        }
+
+        // Update Chart Time Series
+        const labels = [];
+        const eyCurve = [];
+        const polarCurve = [];
+        const sweetCurve = [];
+        const bitterCurve = [];
+
+        const maxTime = Math.max(24, Math.min(48, shotTime + 4));
+        for (let t = 0; t <= maxTime; t += 2) {
+            labels.push(t);
+            // Cumulative EY curve
+            const curEy = t <= shotTime 
+                ? ey * (1 - Math.exp(-2.6 * t / shotTime))
+                : ey;
+            eyCurve.push(parseFloat(curEy.toFixed(2)));
+
+            // Instantaneous Elution Peaks (Chromatogram style scaled for chart)
+            const polarPeak = 18 * Math.exp(-Math.pow((t - 5) / 5.5, 2));
+            const sweetPeak = 15 * Math.exp(-Math.pow((t - (shotTime * 0.52)) / 7.5, 2));
+            const bitterPeak = (12 * (ey / 20)) * (1 / (1 + Math.exp(-(t - (shotTime * 0.72)) / 3.5)));
+
+            polarCurve.push(parseFloat(polarPeak.toFixed(2)));
+            sweetCurve.push(parseFloat(sweetPeak.toFixed(2)));
+            bitterCurve.push(parseFloat(bitterPeak.toFixed(2)));
+        }
+
+        elutionChartInstance.data.labels = labels;
+        elutionChartInstance.data.datasets[0].data = eyCurve;
+        elutionChartInstance.data.datasets[1].data = polarCurve;
+        elutionChartInstance.data.datasets[2].data = sweetCurve;
+        elutionChartInstance.data.datasets[3].data = bitterCurve;
+        elutionChartInstance.update();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        initChart();
+        updateLab();
+    });
+</script>
+
+</body>
+</html>
